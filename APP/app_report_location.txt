@@ -1,0 +1,8 @@
+C:\python\report\\app_report\登录失败log.txt,
+C:\python\report\\app_report\搜索失败log.txt,
+C:\python\report\\app_report\加入购物车失败log.txt,
+C:\python\report\\app_report\提交订单失败log.txt,
+C:\python\report\\app_report\用户名登录页面刷新失败log.txt,
+C:\python\report\\app_report\接口操作记录log.txt,
+C:\python\report\\app_report\取消订单失败log.txt,
+C:\python\report\\app_report\删除订单失败log.txt,
