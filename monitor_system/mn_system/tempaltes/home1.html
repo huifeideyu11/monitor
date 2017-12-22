@@ -1,0 +1,29 @@
+<!-- base.html 基础模板 -->
+{% extends 'base.html' %}
+
+{% block title %} 监控系统 {% endblock %}
+{% block content %}
+<!-- Content -->
+    <div id="content" class="colMS">
+
+        <h1>监控系统管理</h1>
+
+    <div id="content-main">
+            <div class="app-mn_system module">
+            <table>
+            <caption>
+                <a href="/home/" class="section" title="系统管理">系统管理</a>
+            </caption>
+                <tbody><tr class="model-interface_addshop">
+                    <th scope="row"><a href="/admin/mn_system/interface_addshop/">Inter face_ add shops</a></th>
+                </tr>
+                <tr class="model-interface_login">
+                    <th scope="row"><a href="/admin/mn_system/interface_login/">Inter face_ logins</a></th>
+                </tr>
+            </tbody></table>
+            </div>
+    </div>
+        <br class="clear">
+    </div>
+    <!-- END Content -->
+{% endblock %}

@@ -36,16 +36,22 @@ def login_action(request):    # 登录视图
             return render(request, 'login.html', {'error': 'username or password error!'})
 
 def home(request):
-    username = request.user.username    # 获取登录网址的账号用户名
-    return render(request, 'home.html', {'username':username})
-
-def interFaceManage(request):
     '''
-    展示接口与相应的开发者
+    视图返回网站主页
     :param request:
     :return:
     '''
-    pass
+    username = request.user.username    # 获取登录网址的账号用户名
+    return render(request, 'home1.html', {'username':username})
+
+def interFaceManage(request):
+    '''
+    视图返回：接口与相应的开发者对应关系列表页
+    :param request:
+    :return:
+    '''
+    InterFace_to_Developers = InterFace_to_Developer.objects.all()    # 获取数据库中InterFace_to_Developer表中所有数据
+    return render(request, 'interfaceManage1.html', {'InterFace_to_Developers': InterFace_to_Developers})
 
 def interFaceList(request):
     '''

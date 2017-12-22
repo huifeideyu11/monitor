@@ -1,30 +1,4 @@
-<html>
-	<head>
-		{% load bootstrap3 %}
-		{% bootstrap_css%}
-		{% bootstrap_javascript %}
-		<title>监控管理系统</title>
-	</head>
+<!-- base.html 基础模板 -->
+{% extends 'base.html' %}
 
-	<body role='document'>
-		<!-- 导航栏 -->
-		<nav class="navbar navbar-inverse navbar-fixed-top">
-			<div class='container'>
-				<div class="navbar-header">
-					<a class=navbar-brand" href="/home/">监控管理系统</a>
-				</div>
-				<div id="navbar" class="collapse navbar-collapse">
-					<ul class="nav navbar-nav">
-						<li class="active"><a href="/manage/">接口与开发者管理</a></li>
-						<li><a href="/interfacelist/">接口列表</a></li>
-					</ul>
-					<ul class="nav navbar-nav navbar-right">
-						<li><a href="#">你好！{{username}}</a></li>
-						<li><a href="/logout/">退出</a></li>
-					</ul>
-				</div>
-			</div>
-		</nav>
-
-	</body>
-</html>
+{% block title %} 监控系统 {% endblock %}

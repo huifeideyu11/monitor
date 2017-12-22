@@ -1,0 +1,34 @@
+<!-- 接口与开发者管理页面 -->
+{% extends 'base.html' %}
+{% block title %} 接口与开发者管理页面 {% endblock %}
+
+{% block headmessage %} 接口与接口对应关系 {% endblock %}
+
+{% block content %}
+    <!-- 接口与接口对应关系列表 -->
+    <div class='row' style='padding-top:80px;'>
+        <div class="col-md-6">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>id</th><th>接口名称</th><th>开发人员</th><th>更新时间</th><th>修改者</th><th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for InterFace_to_Developer in InterFace_to_Developers %}
+                        <tr>
+                            <td>{{ InterFace_to_Developer.id }}</td>
+                            <td>{{ InterFace_to_Developer.interface_name }}</td>
+                            <td>{{ InterFace_to_Developer.developerName }}</td>
+                            <td>{{ InterFace_to_Developer.LatestModifyDate }}</td>
+                            <td>{{ InterFace_to_Developer.editor }}</td>
+                            <td>
+                                <a href="/sign_index/{{ InterFace_to_Developer.id }}/" target="{{ InterFace_to_Developer.id }}_blank">编辑</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

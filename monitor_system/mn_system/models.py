@@ -8,13 +8,13 @@ from django.utils import timezone
 
 # 接口和开发者对应关系表
 class InterFace_to_Developer(models.Model):
-    interface_name = models.CharField(max_length=200)           # 接口
-    developerName = models.CharField(max_length=200)           # 开发人员姓名
-    LatestModifyDate = models.DateTimeField(auto_now=True)     # 获取更新表格的时间
-    editor = models.CharField(max_length=200)                   # 表数据修改者即用户登录名
+    interface_name = models.CharField(max_length=200, verbose_name='接口名称')           # 接口
+    developerName = models.CharField(max_length=200, verbose_name='开发人员')           # 开发人员姓名
+    LatestModifyDate = models.DateTimeField(auto_now=True, verbose_name='更新时间')     # 获取更新表格的时间
+    editor = models.CharField(max_length=200, verbose_name='修改者')                   # 表数据修改者即用户登录名
 
     def __str__(self):                                     # 设置调用该类时，实例默认显示的对象
-        return self.interface
+        return '%s %s' %(self.interface_name, self.developerName)    # 注意：只能返回字符串
 
 class InterFace_Login(models.Model):
     interface_name = models.CharField(default='登录接口', max_length=200)    # 接口名称， 登录接口
@@ -34,7 +34,7 @@ class InterFace_Search(models.Model):
     result = models.CharField(max_length=100)  # 接口调用结果（值只有：success和fail）
     reason = models.CharField(max_length=200)  # 原因分为：接口调用异常和接口返回值错误
     return_value = models.CharField(max_length=200)  # 接口返回值错误时，接口的返回值
-    abnormal = models.CharField(max_length=200)  # 接口访问异常时，异常信息
+    abnormal = models.CharField(max_length=200)  # 接口访问异常时，异常信息s
 
     def __str__(self):
         return self.interface_name
