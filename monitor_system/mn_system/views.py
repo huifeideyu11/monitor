@@ -50,8 +50,9 @@ def interFaceManage(request):
     :param request:
     :return:
     '''
+    username = request.user.username    # 获取登录网址的账号用户名
     InterFace_to_Developers = InterFace_to_Developer.objects.all()    # 获取数据库中InterFace_to_Developer表中所有数据
-    return render(request, 'interfaceManage1.html', {'InterFace_to_Developers': InterFace_to_Developers})
+    return render(request, 'interfaceManage1.html', {'InterFace_to_Developers': InterFace_to_Developers, 'username':username})
 
 def interFaceList(request):
     '''
