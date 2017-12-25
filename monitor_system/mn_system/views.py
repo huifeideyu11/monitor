@@ -54,6 +54,18 @@ def interFaceManage(request):
     InterFace_to_Developers = InterFace_to_Developer.objects.all()    # 获取数据库中InterFace_to_Developer表中所有数据
     return render(request, 'interfaceManage1.html', {'InterFace_to_Developers': InterFace_to_Developers, 'username':username})
 
+def interFaceEdit(request, id):
+    '''
+    返回到接口与开发者的编辑页面
+    :param request:
+    :return: 返回一个接口与开发者的编辑页面
+    '''
+    username = request.user.username  # 获取登录网址的账号用户名
+    interFaceName = InterFace_to_Developer.objects.get(id = id).interface_name
+    developerName = InterFace_to_Developer.objects.get(id = id).developerName
+    return render(request, 'interFaceEdit.html', {'username':username, 'interFaceName':interFaceName,
+                                                  'developerName':developerName})
+
 def interFaceList(request):
     '''
     接口列表
@@ -69,3 +81,4 @@ def interFace_request_detail(request):
     :return: 返回一个接口调用详情展示页面，页面以列表形式呈现
     '''
     pass
+

@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^login_action/$', views.login_action),
     url(r'^home/$', views.home),
     url(r'^manage/$', views.interFaceManage),
+    url(r'^manage/edit/(\d+)$', views.interFaceEdit),
     url(r'^interfacelist/$', views.interFaceList),
     url(r'^interfacedetail/$', views.interFace_request_detail),
 

@@ -1,0 +1,38 @@
+<!-- 接口与开发者的编辑页面 -->
+{% extends 'base1.html' %}
+
+{% block title %}接口与开发者管理编辑页面{% endblock %}
+{% block headmessage %}编辑{{interFaceName}}接口{% endblock %}
+{% block content %}
+<div id="content-main">
+<form enctype="multipart/form-data" action="" method="post" id="interface_to_developer_form" novalidate=""><input type="hidden" name="csrfmiddlewaretoken" value="XvKiE9NQZYKGWYuP5PMnvSt3I1P2hQALJJmZGNRdupkqlshPcFqCBs6MykkQPjMK">
+<div>
+    <fieldset class="module aligned ">
+        <div class="form-row field-interface_name">
+                <div>
+                        <label class="required" for="id_interface_name">接口名称:</label>
+                            <input class="vTextField" id="id_interface_name" maxlength="200" name="interface_name" type="text" value={{interFaceName}} required="">
+                </div>
+        </div>
+        <div class="form-row field-developerName">
+                <div>
+                        <label class="required" for="id_developerName">开发人员:</label>
+                            <input class="vTextField" id="id_developerName" maxlength="200" name="developerName" type="text" value={{developerName}} required="">
+                </div>
+        </div>
+        <div class="form-row field-editor">
+                <div>
+                        <label class="required" for="id_editor">修改者:</label>
+                            <input class="vTextField" id="id_editor" maxlength="200" name="editor" type="text" value={{username}} required="">
+                </div>
+        </div>
+    </fieldset>
+    <div class="submit-row">
+    <input type="submit" value="保存" class="default" name="_save">
+    <input type="submit" value="保存并增加另一个" name="_addanother">
+    <input type="submit" value="保存并继续编辑" name="_continue">
+    </div>
+</div>
+</form>
+</div>
+{% endblock %}
