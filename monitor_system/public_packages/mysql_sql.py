@@ -6,4 +6,3 @@
 明天工作内容：1、mysql与python3连接；  2、 mysql的增、删、改、查sql语句封装成可以被python3调用的方法
 '''
 
-pass
