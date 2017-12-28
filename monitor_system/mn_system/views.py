@@ -63,8 +63,26 @@ def interFaceEdit(request, id):
     username = request.user.username  # 获取登录网址的账号用户名
     interFaceName = InterFace_to_Developer.objects.get(id = id).interface_name
     developerName = InterFace_to_Developer.objects.get(id = id).developerName
+    print('接口值是：', developerName)
     return render(request, 'interFaceEdit.html', {'username':username, 'interFaceName':interFaceName,
-                                                  'developerName':developerName})
+                                                  'developerName':developerName, 'id':id})
+
+def interFaceEditSave(request, id):
+    '''
+    保存修改后的接口管理数据
+    :param request:
+    :param id: 被修改数据的id号
+    :return: 返回到接口管理列表页
+    '''
+    print('保存数据被执行')
+    developerName = request.POST.get('developerName', '')         # 获取修改的接口开发者名单
+    username = request.user.username                                 # 获取当前用户名
+    itd = InterFace_to_Developer.objects.get(id = id)
+    itd.developerName = developerName                                # 更新数据库中接口对应的开发者数据
+    itd.editor = username                                          # 更新接口修改者的数据
+    itd.save()
+    return HttpResponseRedirect('/manage/')
+
 
 def interFaceList(request):
     '''

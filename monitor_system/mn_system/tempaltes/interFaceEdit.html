@@ -5,7 +5,7 @@
 {% block headmessage %}编辑{{interFaceName}}接口{% endblock %}
 {% block content %}
 <div id="content-main">
-<form enctype="multipart/form-data" action="" method="post" id="interface_to_developer_form" novalidate=""><input type="hidden" name="csrfmiddlewaretoken" value="XvKiE9NQZYKGWYuP5PMnvSt3I1P2hQALJJmZGNRdupkqlshPcFqCBs6MykkQPjMK">
+<form enctype="multipart/form-data" action="/manage/edit/{{id}}/save/" method="post" id="interface_to_developer_form" novalidate=""><input type="hidden" name="csrfmiddlewaretoken" value="XvKiE9NQZYKGWYuP5PMnvSt3I1P2hQALJJmZGNRdupkqlshPcFqCBs6MykkQPjMK">
 <div>
     <fieldset class="module aligned ">
         <div class="form-row field-interface_name">
@@ -29,6 +29,7 @@
     </fieldset>
     <div class="submit-row">
     <input type="submit" value="保存" class="default" name="_save">
+        {% csrf_token %}
     <input type="submit" value="保存并增加另一个" name="_addanother">
     <input type="submit" value="保存并继续编辑" name="_continue">
     </div>
