@@ -7,11 +7,11 @@
 {% block content %}
     <!-- 接口与接口对应关系列表 -->
     <div class='row' style='padding-top:80px;'>
-        <div class="col-md-6">
+        <div class="col-md-12">
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>id</th><th>接口名称</th><th>开发人员</th><th>更新时间</th><th>修改者</th><th>操作</th>
+                        <th>id</th><th>接口名称</th><th>邮箱</th><th>手机号</th>></th><th>更新时间</th><th>修改者</th><th>操作</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -19,7 +19,8 @@
                         <tr>
                             <td>{{ InterFace_to_Developer.id }}</td>
                             <td>{{ InterFace_to_Developer.interface_name }}</td>
-                            <td>{{ InterFace_to_Developer.developerName }}</td>
+                            <td>{{ InterFace_to_Developer.email }}</td>
+                            <td>{{ InterFace_to_Developer.phone }}</td>
                             <td>{{ InterFace_to_Developer.LatestModifyDate }}</td>
                             <td>{{ InterFace_to_Developer.editor }}</td>
                             <td>

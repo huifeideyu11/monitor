@@ -62,10 +62,11 @@ def interFaceEdit(request, id):
     '''
     username = request.user.username  # 获取登录网址的账号用户名
     interFaceName = InterFace_to_Developer.objects.get(id = id).interface_name
-    developerName = InterFace_to_Developer.objects.get(id = id).developerName
-    print('接口值是：', developerName)
+    email = InterFace_to_Developer.objects.get(id = id).email
+    phone = InterFace_to_Developer.objects.get(id=id).phone
+    print('接口值是：', email)
     return render(request, 'interFaceEdit.html', {'username':username, 'interFaceName':interFaceName,
-                                                  'developerName':developerName, 'id':id})
+                                                  'email':email, 'phone':phone, 'id':id})
 
 def interFaceEditSave(request, id):
     '''
@@ -74,14 +75,14 @@ def interFaceEditSave(request, id):
     :param id: 被修改数据的id号
     :return: 返回到接口管理列表页
     '''
-    print('保存数据被执行')
-    developerName = request.POST.get('developerName', '')         # 获取修改的接口开发者名单
-    username = request.user.username                                 # 获取当前用户名
-    itd = InterFace_to_Developer.objects.get(id = id)
-    itd.developerName = developerName                                # 更新数据库中接口对应的开发者数据
-    itd.editor = username                                          # 更新接口修改者的数据
+    email = request.POST.get('email', '')         # 获取修改的接口开发者邮箱,eamil对应的是模板中元素的属性name的值
+    phone = request.POST.get('phone', '')  # 获取修改的接口开发者手机号
+    itd = InterFace_to_Developer.objects.get(id = id)               # 获取被修改接口的数据
+    itd.email = email                           # 更新数据库中接口对应的开发者邮箱
+    itd.phone = phone                          # 更新数据库中接口对应的开发者手机
+    itd.editor = request.user.username                                         # 更新接口修改者的数据
     itd.save()
-    return HttpResponseRedirect('/manage/')
+    return HttpResponseRedirect('/manage/')     # 重定向，视图函数执行完之后，返回值urlpatterns中/manage/对应的视图函数
 
 
 def interFaceList(request):

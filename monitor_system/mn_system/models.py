@@ -9,12 +9,13 @@ from django.utils import timezone
 # 接口和开发者对应关系表
 class InterFace_to_Developer(models.Model):
     interface_name = models.CharField(max_length=200, verbose_name='接口名称')           # 接口
-    developerName = models.CharField(max_length=200, verbose_name='开发人员')           # 开发人员姓名
+    email = models.CharField(max_length=200, verbose_name='邮箱')        # 邮件报警通知人员的邮箱地址
+    phone = models.CharField(max_length=200, verbose_name='手机号')      # 短信报警人员的手机号
     LatestModifyDate = models.DateTimeField(auto_now=True, verbose_name='更新时间')     # 获取更新表格的时间
     editor = models.CharField(max_length=200, verbose_name='修改者')                   # 表数据修改者即用户登录名
 
     def __str__(self):                                     # 设置调用该类时，实例默认显示的对象
-        return '%s %s' %(self.interface_name, self.developerName)    # 注意：只能返回字符串
+        return self.interface_name    # 注意：只能返回字符串
 
 class InterFace_Login(models.Model):
     interface_name = models.CharField(default='登录接口', max_length=200)    # 接口名称， 登录接口
@@ -62,6 +63,13 @@ class InterFace_SubmitOrder(models.Model):
 
     def __str__(self):
         return self.interface_name
+
+
+class developer(models.Model):
+    '''
+    该模型用于存储开发者与其邮箱、手机号
+    '''
+    pass
 
 
 

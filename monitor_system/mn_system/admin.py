@@ -7,7 +7,7 @@ from .models import *
 # Register your models here.
 
 class InterFace_to_DeveloperAdmin(admin.ModelAdmin):
-    list_display = ['interface_name', 'developerName', 'LatestModifyDate', 'editor']
+    list_display = ['interface_name', 'email','phone', 'LatestModifyDate', 'editor']
 
 class InterFace_LoginAdmin(admin.ModelAdmin):
     list_display = ('interface_name', 'request_time', 'result', 'reason', 'return_value', 'abnormal')

@@ -7,7 +7,7 @@ import time, json, random
 from Auto_mail import send_mail,time_c, time_n, access_hour
 from assertpy import assert_that
 from requests.adapters import HTTPAdapter
-from public_module import sendmsg
+from public_module import sendmsg, accessEmail
 
 '''
     注：
@@ -19,6 +19,7 @@ from public_module import sendmsg
         包括：提交订单、取消订单、删除订单接口
 '''
 
+'''
 #########################短信发送数据##########################
 # ----注意：phonenum_l、phonenum_s、phonenum_a、phonenum_o 变量值为多个号码中间用逗号隔开，但是不留空格
 # phonenum_l: 登录接口相关人员;       phonenum_s: 搜索接口相关人员
@@ -28,7 +29,6 @@ phonenum_s = '13694917391,13684995613,13410547406,18675583403,13339916922,183209
 phonenum_a = '13694917391,13684995613,13692230821,15999969165,18675583403,13339916922,18320989189,17704003244'
 phonenum_o = '13694917391,13684995613,13480794537,15013732515,17704003244,13692230821,15999969165,18675583403,13339916922,18320989189'
 
-terminal = 'APP'       # 终端分类标志
 
 ######################### 邮件数据 ######################
 server = {'username':'monitor@xiu.com', 'psw':'zoshow$%^456', 'host':"smtp.xiu.com", 'port':25}  # 邮件配置数据
@@ -47,18 +47,36 @@ to_addr_o = ['michelle.jia@xiu.com', 'yongsheng.luo@xiu.com', 'stone.xia@xiu.com
              'mike.gao@xiu.com', 'simon.li@xiu.com', 'jeff.hong@xiu.com', 'fc.li@xiu.com',
              'bin.liao@xiu.com', 'deny.liu@xiu.com']   # 下单接口相关人员
 
+'''
+terminal = 'APP测试'       # 终端分类标志，被写入到邮件的主题以及短信中，如果是本地调试，请注明调试字样，
+server = {'username':'monitor@xiu.com', 'psw':'zoshow$%^456', 'host':"smtp.xiu.com", 'port':25}  # 邮件配置数据
+from_addr = 'monitor@xiu.com'     # 邮件发送者
 
-# --------------- 从配置文件中读取文件的路径 ----------------
+emailaddress, phones = accessEmail('mn_system_interface_to_developer')     # 从数据库中获取接口报警的邮箱地址和手机号
+
+# --- 获取接口的报警邮件地址 ---#
+to_addr_l = emailaddress['登录接口']
+to_addr_s = emailaddress['搜索接口']
+to_addr_a = emailaddress['购物车接口']
+to_addr_o = emailaddress['订单接口']
+
+# --- 获取接口的短信报警人的电话 ---#
+phonenum_l = phones['登录接口']
+phonenum_s = phones['搜索接口']
+phonenum_a = phones['购物车接口']
+phonenum_o = phones['订单接口']
+
+
+# 从配置文件中读取文件的路径
 files_l = []
-
-# 打开IP：10.0.1.92电脑上的C:\python\\report\\app_report\\app_report_location.txt，并且读取内容
-with open('C:\python\\report\\app_report\\app_report_location.txt',  'r', encoding='utf-8') as f:
+with open('D:\luotian\Pycharm_Project\InterFace_test\order_process_monitor_app\\' +
+          'app_report_location.txt', 'r', encoding='utf-8') as f:
     files = f.readlines()
 
 for i in range(0, len(files)):
     file = files[i].rstrip(',\n')
     files_l.append(file)
-print(files_l)   #打印配置文件信息
+print(files_l)
 
 
 ##################### 请求失败标志 ############
@@ -74,7 +92,7 @@ params_login = {
                 'memberVo.isRemember':1,
                 'memberVo.regType':'02',
                 'memberVo.password':	'MLlwRATkOs/4b3DLy8xlOQ==',
-                'memberVo.logonName': '15361431731'
+                'memberVo.logonName': '13694917391'
 }        # 登录params参数
 
 data_search = {'kw': '测试', 'p':1, 'v': 2.0,
@@ -135,7 +153,7 @@ for i in range(1,2):
     ##################### 用户登录请求 #######################
     try:
         time_f = time_n()
-        r_login = s.get(url_login, headers=headers, params=params_login, timeout=60)
+        r_login = s.get(url_login, headers=headers, params=params_login, timeout=0.01)
         time.sleep(random.randint(0,10))
         print(r_login.json())
         r_login_j = r_login.json()     # 当返回的json格式不规范时，此处有可能出现json解析报错

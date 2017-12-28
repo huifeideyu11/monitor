@@ -5,6 +5,7 @@ import requests
 import traceback
 from Auto_mail import send_mail,time_c, time_n
 from requests.adapters import HTTPAdapter
+from public_packages.mysql_sql import mysql_db
 
 
 def sendmsg(terminal, phonenum, msg_text, time_s='', filename1='', filename2=''):
@@ -55,5 +56,30 @@ def sendmsg(terminal, phonenum, msg_text, time_s='', filename1='', filename2='')
         send_mail(server, from_addr, to_addr, subject, text=msg_text, files=[filename2])  # 短信异常发送邮件
         s_sendmsg.close()  # 关闭会话
 
+def accessEmail(table, fieldname=None, data=None):
+    '''
+        :param table: 数据库monitor_system中表名
+        :param fieldname 表中字段名称
+        :param interfacename: 接口名称
+        :return:返回一个元组由两个字典，由接口名称和对应的报警邮箱地址组成的键值对组成
+    '''
+    emailaddress = {}
+    phones = {}
+    db = mysql_db()                        # 连接monitor_system数据库
+    results, index = db.select(table, fieldname=None, data=None)
+    re = db.access_result(results, index)
+    for i in range(len(re)):
+        emailaddress[re[i]['interface_name']] = re[i]['email']
+        phones[re[i]['interface_name']] = re[i]['phone']
+
+    db.close()
+    return emailaddress, phones
+
+
 if __name__ == '__main__':
-    print('测试信息')
+    print(accessEmail('mn_system_interface_to_developer'))
+    url = 'http://ws.montnets.com:9002/MWGate/wmgw.asmx/MongateCsSpSendSmsNew?' \
+          'userId=J30173&password=080056&pszMobis={0}&pszMsg={1}&iMobiCount={2}&' \
+          'pszSubPort=106571014054499'.format('13684995613', '短信测试', 1)
+    r = requests.get(url, timeout=60)
+    print('短信发送成功')
