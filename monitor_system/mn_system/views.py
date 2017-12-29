@@ -87,11 +87,14 @@ def interFaceEditSave(request, id):
 
 def interFaceList(request):
     '''
-    接口列表
+    接口调用详情列表页
     :param request:
-    :return: 返回一个接口列表展示页面，点击相应接口可以查看接口的调用详情
+    :return: 返回一个接口列表调用详情展示页面
     '''
-    pass
+    interfacelists = interfacelist.objects.all()                # 获取数据库mn_system_interfacelist表中所有数据
+    username = request.user.username                            # 获取的当前访问的用户名
+    return render(request, 'interfaceCallDetail.html', {'interfacelists': interfacelists, 'username':username})
+
 
 def interFace_request_detail(request):
     '''

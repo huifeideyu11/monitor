@@ -1,0 +1,34 @@
+<!-- 接口调用详情页面 -->
+{% extends 'base1.html' %}
+{% block title %} 接口调用列表详情页 {% endblock %}
+
+{% block headmessage %} 接口调用列表详情页 {% endblock %}
+
+{% block content %}
+    <!-- 接口与接口对应关系列表 -->
+    <div class='row' style='padding-top:80px;'>
+        <div class="col-md-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>id</th><th>接口名称</th><th>登录情况</th><th>调用时间</th><th>调用结果</th><th>原因</th><th>接口返回值</th><th>接口异常信息</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for interfacelist in interfacelists %}
+                        <tr>
+                            <td>{{ interfacelist.id }}</td>
+                            <td>{{ interfacelist.interface_name }}</td>
+                            <td>{{ interfacelist.login_result }}</td>
+                            <td>{{ interfacelist.request_time }}</td>
+                            <td>{{ interfacelist.result }}</td>
+                            <td>{{ interfacelist.reason }}</td>
+                            <td>{{ interfacelist.return_value }}</td>
+                            <td>{{ interfacelist.abnormal }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

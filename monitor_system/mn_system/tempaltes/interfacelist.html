@@ -1,8 +1,8 @@
-<!-- 接口与开发者管理页面 -->
+<!-- 接口列表页面 -->
 {% extends 'base1.html' %}
-{% block title %} 接口与开发者管理页面 {% endblock %}
+{% block title %} 接口列表页面 {% endblock %}
 
-{% block headmessage %} 接口与开发者对应关系 {% endblock %}
+{% block headmessage %} 接口列表 {% endblock %}
 
 {% block content %}
     <!-- 接口与接口对应关系列表 -->
@@ -15,7 +15,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for InterFace_to_Developer in InterFace_to_Developers %}
+                    {% for Int in InterFace_to_Developers %}
                         <tr>
                             <td>{{ InterFace_to_Developer.id }}</td>
                             <td>{{ InterFace_to_Developer.interface_name }}</td>

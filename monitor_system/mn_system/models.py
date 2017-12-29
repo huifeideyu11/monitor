@@ -17,31 +17,12 @@ class InterFace_to_Developer(models.Model):
     def __str__(self):                                     # 设置调用该类时，实例默认显示的对象
         return self.interface_name    # 注意：只能返回字符串
 
-class InterFace_Login(models.Model):
-    interface_name = models.CharField(default='登录接口', max_length=200)    # 接口名称， 登录接口
-    request_time = models.DateTimeField(auto_now=True)     # 接口调用时间
-    result = models.CharField(max_length=100)               # 接口调用结果（值只有：success和fail）
-    reason = models.CharField(max_length=200)               # 原因分为：接口调用异常和接口返回值错误
-    return_value = models.CharField(max_length=200)         # 接口返回值错误时，接口的返回值
-    abnormal = models.CharField(max_length=200)             # 接口访问异常时，异常信息
 
-    def __str__(self):
-        return self.interface_name
-
-class InterFace_Search(models.Model):
-    interface_name = models.CharField(default='搜索接口', max_length=200)  # 接口名称， 搜索接口
-    login_result = models.CharField(max_length=100)  # 登录情况（值只有：success和fail）
-    request_time = models.DateTimeField(auto_now=True)  # 若登录失败，接口调用时间为调登录接口失败的时间
-    result = models.CharField(max_length=100)  # 接口调用结果（值只有：success和fail）
-    reason = models.CharField(max_length=200)  # 原因分为：接口调用异常和接口返回值错误
-    return_value = models.CharField(max_length=200)  # 接口返回值错误时，接口的返回值
-    abnormal = models.CharField(max_length=200)  # 接口访问异常时，异常信息s
-
-    def __str__(self):
-        return self.interface_name
-
-class InterFace_AddShop(models.Model):
-    interface_name = models.CharField(default='添加购物车', max_length=200)  # 接口名称， 添加购物车接口
+class interfacelist(models.Model):
+    '''
+    用于存储各列表被调用的详情
+    '''
+    interface_name = models.CharField(max_length=200)  # 接口名称， 添加购物车接口
     login_result = models.CharField(max_length=100)  # 登录情况（值只有：success和fail）
     request_time = models.DateTimeField(auto_now=True)  # 若登录失败，接口调用时间为调登录接口失败的时间
     result = models.CharField(max_length=100)  # 接口调用结果（值只有：success和fail）
@@ -51,25 +32,3 @@ class InterFace_AddShop(models.Model):
 
     def __str__(self):
         return self.interface_name
-
-class InterFace_SubmitOrder(models.Model):
-    interface_name = models.CharField(default='提交订单接口', max_length=200)  # 接口名称， 提交订单接口
-    login_result = models.CharField(max_length=100)  # 登录情况（值只有：success和fail）
-    request_time = models.DateTimeField(auto_now=True)  # 若登录失败，接口调用时间为调登录接口失败的时间
-    result = models.CharField(max_length=100)  # 接口调用结果（值只有：success和fail）
-    reason = models.CharField(max_length=200)  # 原因分为：接口调用异常和接口返回值错误
-    return_value = models.CharField(max_length=200)  # 接口返回值错误时，接口的返回值
-    abnormal = models.CharField(max_length=200)  # 接口访问异常时，异常信息
-
-    def __str__(self):
-        return self.interface_name
-
-
-class developer(models.Model):
-    '''
-    该模型用于存储开发者与其邮箱、手机号
-    '''
-    pass
-
-
-

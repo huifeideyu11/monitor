@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 import requests
-import traceback
+import traceback, re
 from Auto_mail import send_mail,time_c, time_n
 from requests.adapters import HTTPAdapter
 from public_packages.mysql_sql import mysql_db
@@ -56,30 +56,72 @@ def sendmsg(terminal, phonenum, msg_text, time_s='', filename1='', filename2='')
         send_mail(server, from_addr, to_addr, subject, text=msg_text, files=[filename2])  # 短信异常发送邮件
         s_sendmsg.close()  # 关闭会话
 
-def accessEmail(table, fieldname=None, data=None):
-    '''
-        :param table: 数据库monitor_system中表名
-        :param fieldname 表中字段名称
-        :param interfacename: 接口名称
-        :return:返回一个元组由两个字典，由接口名称和对应的报警邮箱地址组成的键值对组成
-    '''
-    emailaddress = {}
-    phones = {}
-    db = mysql_db()                        # 连接monitor_system数据库
-    results, index = db.select(table, fieldname=None, data=None)
-    re = db.access_result(results, index)
-    for i in range(len(re)):
-        emailaddress[re[i]['interface_name']] = re[i]['email']
-        phones[re[i]['interface_name']] = re[i]['phone']
+class monitor():
 
-    db.close()
-    return emailaddress, phones
+    def accessEmail(self, table, fieldname=None, data=None):
+        '''
+            :param table: 数据库monitor_system中表名
+            :param fieldname 表中字段名称
+            :param interfacename: 接口名称
+            :return:返回一个元组由两个字典，由接口名称和对应的报警邮箱地址组成的键值对组成
+        '''
+        emailaddress = {}
+        phones = {}
+        db = mysql_db()                        # 连接monitor_system数据库
+        results, index = db.select(table, fieldname=None, data=None)
+        re = db.access_result(results, index)
+        for i in range(len(re)):
+            emailaddress[re[i]['interface_name']] = re[i]['email']
+            phones[re[i]['interface_name']] = re[i]['phone']
+
+        db.close()
+        return emailaddress, phones
+
+    def interface_email(self, emailaddress, interfacename):
+        '''
+        目的：将同一接口的邮件地址存放在一个列表中
+        :param emailaddress: 字典类型，键值对是由接口名和对应的邮件报警人邮箱组成，值是字符串类型
+        :param interfacename:接口名
+        :return: 返回一个列表，存放同一接口的报警通知人邮件地址，
+        '''
+        email = emailaddress[interfacename]                  # 获取指定接口的所有邮件报警人地址
+        to_addr = re.split(',|，', email)                    # 用“,”和“，”进行分割字符串（“，”分别是中文和英文版的逗号）
+        return to_addr
+
+    def interface_phone(self, phones, interfacename):
+        '''
+            目的：同一接口对应的开发手机号拼接成符合短信发送要求的字符串
+            :param emailaddress: 字典类型，键值对是由接口名和对应的开发手机号组成，值是字符串类型
+            :param interfacename:接口名
+            :return: 返回字符串，由同一个接口对应的所有报警通知人员的手机号拼接而成，
+        '''
+        phonenums = re.split(',|，', phones[interfacename])    # 将同一接口的电话号码，进行分割，返回的是一个列表
+        phone = ''
+        for phonenum in phonenums:
+            if len(phonenums) == 1:
+                phone = phonenums[0]
+                break
+            phonenum = phonenum +','
+            phone += phonenum
+        return phone.rstrip(',')
 
 
 if __name__ == '__main__':
-    print(accessEmail('mn_system_interface_to_developer'))
+
+    '''
     url = 'http://ws.montnets.com:9002/MWGate/wmgw.asmx/MongateCsSpSendSmsNew?' \
           'userId=J30173&password=080056&pszMobis={0}&pszMsg={1}&iMobiCount={2}&' \
           'pszSubPort=106571014054499'.format('13684995613', '短信测试', 1)
     r = requests.get(url, timeout=60)
     print('短信发送成功')
+    email_login = accessEmail('mn_system_interface_to_developer')[0]['登录接口']
+    to_addr_l1 = email_login.split(' ')
+    print(to_addr_l1)
+    to_addr_l = re.split(",|，", email_login)
+    print(to_addr_l)
+    '''
+    monitor = monitor()
+    print(monitor.accessEmail('mn_system_interface_to_developer'))
+    emailaddress, phones = monitor.accessEmail('mn_system_interface_to_developer')
+    print(monitor.interface_email(emailaddress, '登录接口'))
+    print(monitor.interface_phone(phones, '登录接口'))
