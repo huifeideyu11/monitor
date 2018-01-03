@@ -64,7 +64,7 @@ class mysql_db():
         for res in results:
             row = {}
             for i in range(len(index)):
-                row[index[i][0]] = res[i]  # 将每个字段名和相应的值添加到字典row中
+                row[index[i][0]] = res[i]  # 将每个字段名和相应的值添加到字典row中，index[i][0]获取字段名
             result.append(row)
         return result
 
@@ -75,12 +75,34 @@ class mysql_db():
         '''
         pass
 
-    def insert(self):
+    def insert(self, tablename, data):
         '''
-        插入数据
-        :return:
+
+        :param tablename: 表名
+        :param data: 字典类型，键值分别由字段名和数据组成
+        :return: 无
         '''
-        pass
+        key_str = ''
+        values_str = ''
+        for key in data:
+            key_str += key + ","
+            if data[key] == None:
+                data[key] = 'null'  # 数据库中防止同时存入空字符串和null，此处做处理
+            values_str += str(data[key]) + ","
+
+        key_str = key_str.rstrip(',')  # 去掉字符串右侧的'，'
+        values_str = values_str.rstrip(',')  # 去掉字符串右侧的'，'
+        values_str = tuple(values_str.split(','))     # 转换成元组
+
+        print(key_str)
+        print(values_str)
+
+        sql = "insert into {0} ({1}) values {2}".format(tablename, key_str, values_str)
+        # print('sql类型', type(sql))
+        # print('sql语句是：', sql)
+        self.cur.execute(sql)
+        self.conn.commit()       # 提交到数据库
+
 
     def delete(self):
         '''
@@ -88,6 +110,20 @@ class mysql_db():
         :return:
         '''
         pass
+
+    def test(self,data):
+        key_str = ''
+        values_str = ''
+        for key in data:
+            key_str += key + ","
+            if data[key] == None:
+                data[key] = 'null'              # 数据库中防止同时存入空字符串和null，此处做处理
+            values_str += str(data[key]) + ","
+
+        key_str = key_str.rstrip(',')  # 去掉字符串右侧的'，'
+        values_str = values_str.rstrip(',')  # 去掉字符串右侧的'，'
+        print('键：',key_str)
+        print('值：',values_str)
 
 
 if __name__ == '__main__':
@@ -98,8 +134,14 @@ if __name__ == '__main__':
     print(r)
     db.close()
     '''
-    db = mysql_db
-    print(type(db))
-    db1 = mysql_db()
-    print(type(db1))
+    data = { 'reason': 'null', 'result': 'success', 'return_value': None,
+            'interface_name': '搜索接口', 'login_result': 'success', 'abnormal': None,
+            'request_time': '2018-01-02 17:25:36'}
+    db = mysql_db()
+    # results,index = db.select('mn_system_interfacelist')
+    # print(db.access_result(results, index))
+    db.insert('mn_system_interfacelist', data)
+    # db.test(data)
+    db.close()
+
 

@@ -7,8 +7,8 @@ import time, json, random
 from Auto_mail import send_mail,time_c, time_n, access_hour
 from assertpy import assert_that
 from requests.adapters import HTTPAdapter
-from public_module import sendmsg, accessEmail
-from public_module.monitor import accessEmail, interface_email, interface_phone
+from public_module import sendmsg, monitor
+# from public_module.monitor import accessEmail, interface_email, interface_phone, interfaceRequestResult
 
 '''
     注：
@@ -53,19 +53,20 @@ terminal = 'APP测试'       # 终端分类标志，被写入到邮件的主题�
 server = {'username':'monitor@xiu.com', 'psw':'zoshow$%^456', 'host':"smtp.xiu.com", 'port':25}  # 邮件配置数据
 from_addr = 'monitor@xiu.com'     # 邮件发送者
 
-emailaddress, phones = accessEmail('mn_system_interface_to_developer')     # 从数据库中获取接口报警的邮箱地址和手机号
+monitor = monitor()
+emailaddress, phones = monitor.accessEmail('mn_system_interface_to_developer')     # 从数据库中获取接口报警的邮箱地址和手机号
 
 # --- 获取接口邮件报警通知人员的邮箱地址 --- #
-to_addr_l = interface_email(emailaddress, '登录接口')
-to_addr_s = interface_email(emailaddress, '搜索接口')
-to_addr_a = interface_email(emailaddress, '购物车接口')
-to_addr_o = interface_email(emailaddress, '订单接口')
+to_addr_l = monitor.interface_email(emailaddress, '登录接口')
+to_addr_s = monitor.interface_email(emailaddress, '搜索接口')
+to_addr_a = monitor.interface_email(emailaddress, '购物车接口')
+to_addr_o = monitor.interface_email(emailaddress, '订单接口')
 
 # --- 获取接口的短信报警人的电话 ---#
-phonenum_l = interface_phone(phones, '登录接口')
-phonenum_s = interface_phone(phones, '搜索接口')
-phonenum_a = interface_phone(phones,'购物车接口')
-phonenum_o = interface_phone(phones, '订单接口')
+phonenum_l = monitor.interface_phone(phones, '登录接口')
+phonenum_s = monitor.interface_phone(phones, '搜索接口')
+phonenum_a = monitor.interface_phone(phones,'购物车接口')
+phonenum_o = monitor.interface_phone(phones, '订单接口')
 
 
 # 从配置文件中读取文件的路径
@@ -144,6 +145,7 @@ headers = { 'User-Agent': 'okhttp/2.5.0'}
 # ----------------------------程序运行-------------------------------- #
 for i in range(1,2):
     print('APP下单监控程序开始')
+    data = {}    # 定义一个空的字典，后面存储调用接口的数据
     time_1 = time.time()     # 记录循环还是时间
     print('第%d次循环' %i)
     headers = {'User-Agent': 'okhttp/2.5.0'}
@@ -164,6 +166,13 @@ for i in range(1,2):
             print('登录成功')
             with open(files_l[9], 'a') as f:
                 f.write("%s：用户【%s】登录成功" % (time_f, params_login['memberVo.logonName']) + '\n')
+
+            data = {'login_result':'success', 'result':'success',
+                    'abnormal':None, 'interface_name': '登录接口',
+                    'request_time,reason':time_f, 'return_value': r_login_j }
+
+            monitor.interfaceRequestResult(data)
+
 
         else:
             # 获取返回的Json值，但是返回值错误，发送邮件
@@ -188,6 +197,12 @@ for i in range(1,2):
             else:
                 print('只发送邮件发送邮件')
                 send_mail(server, from_addr, to_addr_l, subject, filename=files_l[9], tt=time_f, text=text,files=[files_l[8]])  # 发送邮件
+
+            data = {'login_result': 'fail', 'result': 'fail',
+                    'abnormal': None, 'interface_name': '登录接口',
+                    'request_time':time_f, 'reason':'接口返回值错误', 'return_value': '接口返回值错误'}
+
+            monitor.interfaceRequestResult(data)
 
             continue     # 如果登录失败，跳出此次循环，进入下一循环
 
@@ -217,6 +232,12 @@ for i in range(1,2):
             print('只发送邮件发送邮件')
             send_mail(server, from_addr, to_addr_l, subject, filename=files_l[9], tt=time_f, text=text, files=[files_l[8]])  # 发送邮件
 
+        data = {'login_result': 'fail', 'result': 'fail',
+                'abnormal': '异常信息', 'interface_name': '登录接口',
+                'request_time': time_f, 'reason': '接口异常', 'return_value': None}
+
+        monitor.interfaceRequestResult(data)
+
         continue  # 如果登录失败，跳出此次循环，进入下一循环
 
     except:
@@ -245,6 +266,12 @@ for i in range(1,2):
         else:
             print('只发送邮件发送邮件')
             send_mail(server, from_addr, to_addr_l, subject, filename=files_l[9], tt=time_f, text=text, files=[files_l[8]])
+
+        data = {'login_result': 'fail', 'result': 'fail',
+                'abnormal': '异常信息', 'interface_name': '登录接口',
+                'request_time': time_f, 'reason': '接口异常', 'return_value': None}
+
+        monitor.interfaceRequestResult(data)
 
         continue      # 如果登录失败，跳出此次循环，进入下一循环
 

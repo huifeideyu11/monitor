@@ -105,6 +105,17 @@ class monitor():
             phone += phonenum
         return phone.rstrip(',')
 
+    def interfaceRequestResult(self, data, tablename='mn_system_interfacelist'):
+        '''
+        目的：用于将接口调用产生的数据插入到数据库表：mn_system_interfacelist中
+        :param data: 字典类型，需要插入的数据（数据为：接口调用产生的数据）
+        :param tablename: 数据库中表名
+        :return:
+        '''
+        db = mysql_db()                # 连接数据库
+        db.insert(tablename=tablename, data=data)    # 将接口调用的数据插入到数据库中
+        db.close()               # 关闭数据库连接
+
 
 if __name__ == '__main__':
 
