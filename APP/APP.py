@@ -156,7 +156,7 @@ for i in range(1,2):
     ##################### 用户登录请求 #######################
     try:
         time_f = time_n()
-        r_login = s.get(url_login, headers=headers, params=params_login, timeout=0.01)
+        r_login = s.get(url_login, headers=headers, params=params_login, timeout=60)
         time.sleep(random.randint(0,10))
         print(r_login.json())
         r_login_j = r_login.json()     # 当返回的json格式不规范时，此处有可能出现json解析报错
@@ -200,7 +200,7 @@ for i in range(1,2):
 
             data = {'login_result': 'fail', 'result': 'fail',
                     'abnormal': None, 'interface_name': '登录接口',
-                    'request_time':time_f, 'reason':'接口返回值错误', 'return_value': '接口返回值错误'}
+                    'request_time':time_f, 'reason':'返回值错误', 'return_value': r_login_j}
 
             monitor.interfaceRequestResult(data)
 
@@ -216,6 +216,7 @@ for i in range(1,2):
             f.write("%s：用户【%s】登录失败，请求超时" % (time_f, params_login['memberVo.logonName']) + '\n')
 
         error_login = traceback.format_exc()  # 获取报错信息
+        print(traceback.format_exc())
         with open(files_l[8], 'w') as f:  # 将报错信息写入文件
             f.write(error_login)
 
@@ -232,10 +233,10 @@ for i in range(1,2):
             print('只发送邮件发送邮件')
             send_mail(server, from_addr, to_addr_l, subject, filename=files_l[9], tt=time_f, text=text, files=[files_l[8]])  # 发送邮件
 
+        error = monitor.captureAbnormal(files_l[8])                     # 获取异常信息
         data = {'login_result': 'fail', 'result': 'fail',
-                'abnormal': '异常信息', 'interface_name': '登录接口',
+                 'abnormal':error, 'interface_name': '登录接口',
                 'request_time': time_f, 'reason': '接口异常', 'return_value': None}
-
         monitor.interfaceRequestResult(data)
 
         continue  # 如果登录失败，跳出此次循环，进入下一循环
@@ -267,11 +268,12 @@ for i in range(1,2):
             print('只发送邮件发送邮件')
             send_mail(server, from_addr, to_addr_l, subject, filename=files_l[9], tt=time_f, text=text, files=[files_l[8]])
 
+        error = monitor.captureAbnormal(files_l[8])
         data = {'login_result': 'fail', 'result': 'fail',
-                'abnormal': '异常信息', 'interface_name': '登录接口',
+                 'abnormal':error, 'interface_name': '登录接口',
                 'request_time': time_f, 'reason': '接口异常', 'return_value': None}
 
-        monitor.interfaceRequestResult(data)
+        monitor.interfaceRequestResult(data)              # 数据插入到数据库
 
         continue      # 如果登录失败，跳出此次循环，进入下一循环
 
@@ -289,6 +291,12 @@ for i in range(1,2):
         print('搜索成功')
         with open(files_l[9], 'a') as f:    # 记录搜索操作
             f.write("%s：搜索【%s】成功" % (time_f, data_search['kw']) + '\n')
+
+        data = {'login_result': 'success', 'result': 'success',
+                'abnormal': None, 'interface_name': '搜索接口',
+                'request_time': time_f, 'reason': None, 'return_value': r_search.json()}
+
+        monitor.interfaceRequestResult(data)
 
     except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectTimeout):
         '''
@@ -317,6 +325,13 @@ for i in range(1,2):
             send_mail(server, from_addr, to_addr_s, subject, filename=files_l[9], tt=time_f, text=text, files=[files_l[8]])  # 发送邮件
         time.sleep(random.randint(0, 10))
 
+        error = monitor.captureAbnormal(files_l[8])
+        data = {'login_result': 'success', 'result': 'fail',
+                'abnormal': error, 'interface_name': '搜索接口',
+                'request_time': time_f, 'reason': '接口异常', 'return_value': None}
+
+        monitor.interfaceRequestResult(data)
+
     except:
         '''
         查询失败：1、查询验证失败，报AssertError错误；2、请求访问超时报错； 3、服务器拒绝访问等
@@ -343,6 +358,12 @@ for i in range(1,2):
             print('只发送邮件发送邮件')
             send_mail(server, from_addr, to_addr_s, subject, filename=files_l[9], tt=time_f, text=text, files=[files_l[8]])  # 发送邮件
 
+        error = monitor.captureAbnormal(files_l[8])
+        data = {'login_result': 'success', 'result': 'fail',
+                'abnormal': error, 'interface_name': '搜索接口',
+                'request_time': time_f, 'reason': '接口异常', 'return_value': None}
+
+        monitor.interfaceRequestResult(data)
         time.sleep(random.randint(0, 10))
 
 
@@ -364,6 +385,12 @@ for i in range(1,2):
 
             with open(files_l[9], 'a') as f:            # 记录接口操作
                 f.write("%s：商品【%s】添加购物车成功" % (time_f, params_add['goodsSku']) + '\n')
+
+            data = {'login_result': 'success', 'result': 'success',
+                    'abnormal': None, 'interface_name': '购物车接口',
+                    'request_time': time_f, 'reason': None, 'return_value': r_add_j}
+
+            monitor.interfaceRequestResult(data)
 
             ### 删除购物车的商品
             try:
@@ -456,6 +483,12 @@ for i in range(1,2):
                 send_mail(server, from_addr, to_addr_a, subject, filename=files_l[9], tt=time_f, text=text,
                           files=[files_l[8]])
 
+            data = {'login_result': 'success', 'result': 'fail',
+                    'abnormal': None, 'interface_name': '购物车接口',
+                    'request_time':time_f, 'reason': '返回值错误', 'return_value': r_add_j}
+
+            monitor.interfaceRequestResult(data)
+
     except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectTimeout):
         '''
         访问超时异常处理
@@ -484,6 +517,13 @@ for i in range(1,2):
             print('只发送邮件发送邮件')
             send_mail(server, from_addr, to_addr_a, subject, filename=files_l[9], tt=time_f, text=text,
                       files=[files_l[8]])
+
+        error = monitor.captureAbnormal(files_l[8])
+        data = {'login_result': 'success', 'result': 'fail',
+                'abnormal': error, 'interface_name': '购物车接口',
+                'request_time': time_f, 'reason': '接口异常', 'return_value': r_add_j}
+
+        monitor.interfaceRequestResult(data)
         time.sleep(random.randint(0, 10))  # 随机等待时间，防止时间限制反爬
 
     except:
@@ -513,6 +553,13 @@ for i in range(1,2):
             print('只发送邮件发送邮件')
             send_mail(server, from_addr, to_addr_a, subject, filename=files_l[9], tt=time_f, text=text,
                       files=[files_l[8]])
+
+        error = monitor.captureAbnormal(files_l[8])
+        data = {'login_result': 'success', 'result': 'fail',
+                'abnormal': error, 'interface_name': '购物车接口',
+                'request_time': time_f, 'reason': '接口异常', 'return_value': r_add_j}
+
+        monitor.interfaceRequestResult(data)
         time.sleep(random.randint(0, 10))  # 随机等待时间，防止时间限制反爬
 
     ############################################### 提交订单 ########################################################
@@ -537,6 +584,11 @@ for i in range(1,2):
             with open(files_l[9], 'a') as f:     # 将创建的订单记录到文件中
                 f.write("%s：订单【%s】创建成功" %(time_f, r_submit_j['orderNo']) + '\n')
 
+            data = {'login_result': 'success', 'result': 'success',
+                    'abnormal': None, 'interface_name': '订单接口',
+                    'request_time': time_f, 'reason': None, 'return_value': r_submit_j}
+
+            monitor.interfaceRequestResult(data)
             ################# 取消订单 ##################
             try:
                 time_f = time_n()         # 获取当前时间
@@ -675,6 +727,12 @@ for i in range(1,2):
             send_mail(server, from_addr, to_addr_o, subject, filename=files_l[9], tt=time_f, text=text, files=[files_l[8]])  # 发送邮件
             sendmsg(terminal, phonenum_o, text, time_s=time_f, filename1=files_l[9], filename2=files_l[8])  # 发送短信
 
+            data = {'login_result': 'success', 'result': 'fail',
+                    'abnormal': None, 'interface_name': '订单接口',
+                    'request_time': time_f, 'reason': '返回值错误', 'return_value': r_submit_j}
+
+            monitor.interfaceRequestResult(data)
+
     except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectTimeout):
         '''
         访问超时异常处理
@@ -694,6 +752,12 @@ for i in range(1,2):
 
         send_mail(server, from_addr, to_addr_o, subject, filename=files_l[9], tt=time_f, text=text, files=[files_l[8]])  # 发送邮件
         sendmsg(terminal, phonenum_o, text, time_s=time_f, filename1=files_l[9], filename2=files_l[8])  # 发送短信
+        error = monitor.captureAbnormal(files_l[8])
+        data = {'login_result': 'success', 'result': 'fail',
+                'abnormal': error, 'interface_name': '订单接口',
+                'request_time': time_f, 'reason': '接口异常', 'return_value': r_submit_j}
+
+        monitor.interfaceRequestResult(data)
 
     except:
         '''
@@ -714,6 +778,12 @@ for i in range(1,2):
 
         send_mail(server, from_addr, to_addr_o, subject, filename=files_l[9], tt=time_f, text=text, files=[files_l[8]])  # 发送邮件
         sendmsg(terminal, phonenum_o, text, time_s=time_f, filename1=files_l[9], filename2=files_l[8])  # 发送短信
+        error = monitor.captureAbnormal(files_l[8])
+        data = {'login_result': 'success', 'result': 'fail',
+                'abnormal': error, 'interface_name': '订单接口',
+                'request_time': time_f, 'reason': '接口异常', 'return_value': r_submit_j}
+
+        monitor.interfaceRequestResult(data)
 
     s.close()  # 关闭会话
 

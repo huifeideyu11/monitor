@@ -117,6 +117,28 @@ class monitor():
         db.close()               # 关闭数据库连接
 
 
+    def captureAbnormal(self, file):
+        '''
+        :param file: 错误信息文件路径+文件名
+        :return: 返回最后一行的错误类型
+        '''
+        with open(file, 'r') as f:
+            lastline = f.readlines()[-1]          # 读取文件中所有的行，
+            # print('lines类型', type(f.readlines()))
+
+        # error_l = lastline.split(':')[0]                # 使用正则表达式切片办法，获取错误类型
+        error = re.search(r'.*Error:', lastline, re.M|re.I)     # 正则表达式匹配错误类型
+        error_log = error.group().rstrip(':')                   # 去掉错误类型后面的冒号：
+        return error_log
+
+    def acessError(self, errorLog):
+        '''
+        目的：通过正则表达式匹配异常信息
+        :param errorLog:
+        :return:
+        '''
+        pass
+
 if __name__ == '__main__':
 
     '''
@@ -130,9 +152,13 @@ if __name__ == '__main__':
     print(to_addr_l1)
     to_addr_l = re.split(",|，", email_login)
     print(to_addr_l)
-    '''
+
     monitor = monitor()
     print(monitor.accessEmail('mn_system_interface_to_developer'))
     emailaddress, phones = monitor.accessEmail('mn_system_interface_to_developer')
     print(monitor.interface_email(emailaddress, '登录接口'))
     print(monitor.interface_phone(phones, '登录接口'))
+    '''
+    monitor = monitor()
+    error = monitor.captureAbnormal('D:\\test\error_report1.txt')
+

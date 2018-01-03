@@ -28,7 +28,7 @@ class interfacelist(models.Model):
     result = models.CharField(max_length=100, blank=True, null=True)  # 接口调用结果（值只有：success和fail）
     reason = models.CharField(max_length=200, blank=True, null=True)  # 原因分为：接口调用异常和接口返回值错误
     return_value = models.CharField(max_length=200, blank=True, null=True)  # 接口返回值错误时，接口的返回值
-    abnormal = models.CharField(max_length=200, blank=True, null=True)  # 接口访问异常时，异常信息
+    abnormal = models.TextField(blank=True, null=True)  # 接口访问异常时，异常信息
 
     def __str__(self):
         return self.interface_name
