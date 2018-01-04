@@ -141,6 +141,7 @@ if __name__ == '__main__':
     # results,index = db.select('mn_system_interfacelist')
     # print(db.access_result(results, index))
     db.insert('mn_system_interfacelist', data)
+
     # db.test(data)
     db.close()
 

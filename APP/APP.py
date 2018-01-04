@@ -167,9 +167,11 @@ for i in range(1,2):
             with open(files_l[9], 'a') as f:
                 f.write("%s：用户【%s】登录成功" % (time_f, params_login['memberVo.logonName']) + '\n')
 
+
             data = {'login_result':'success', 'result':'success',
-                    'abnormal':None, 'interface_name': '登录接口',
-                    'request_time,reason':time_f, 'return_value': r_login_j }
+                    'abnormal':None, 'interface_name': '登录接口','reason': None,
+                    'request_time':time_f, 'return_value': r_login.text}
+
 
             monitor.interfaceRequestResult(data)
 
