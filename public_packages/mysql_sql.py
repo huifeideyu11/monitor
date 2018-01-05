@@ -6,7 +6,7 @@
 明天工作内容：1、mysql与python3连接；  2、 mysql的增、删、改、查sql语句封装成可以被python3调用的方法
 '''
 import os
-import pymysql
+import pymysql, json, types
 from configparser import ConfigParser
 
 
@@ -88,21 +88,58 @@ class mysql_db():
             key_str += key + ","
             if data[key] == None:
                 data[key] = 'null'  # 数据库中防止同时存入空字符串和null，此处做处理
-            values_str += str(data[key]) + ","
+
+            if isinstance(data[key], dict):
+                data[key] = json.dumps(data[key])
+                # data[key] = pymysql.escape_string(data[key])              # 对json中数据进行字符串转义
+
+            if isinstance(data[key], str):
+                values_str += data[key] + ","
+            else:
+                values_str += str(data[key]) + ","
 
         key_str = key_str.rstrip(',')  # 去掉字符串右侧的'，'
         values_str = values_str.rstrip(',')  # 去掉字符串右侧的'，'
+        print('未转换成元组前values_str值：', values_str)
         values_str = tuple(values_str.split(','))     # 转换成元组
+        print('未转换成元组后values_str值：', values_str)
 
         print(key_str)
-        print(values_str)
+        print('values_str的值是：',values_str)
 
-        sql = "insert into {0} ({1}) values {2}".format(tablename, key_str, values_str)
-        # print('sql类型', type(sql))
-        # print('sql语句是：', sql)
-        self.cur.execute(sql)
+        sql1 = "insert into {0} ({1}) values {2}".format(tablename, key_str, values_str)
+        print('sql1的值是：', sql1)
+        self.cur.execute(sql1)
         self.conn.commit()       # 提交到数据库
 
+    def insert_new(self, tablename, data):
+        '''
+
+        :param tablename: 表名
+        :param data: 字典类型，键值分别由字段名和数据组成
+        :return: 无
+        注：插入语句中的列名，不能以元组的形式通过.format进行传入，如何这样操作，sql语句中的列名会变成字符串，则出现语法错误
+        '''
+        key_str = ''
+        values_str = []
+        for key in data:
+            key_str += key + ","
+            if data[key] == None:
+                data[key] = 'null'  # 数据库中防止同时存入空字符串和null，此处做处理
+            if isinstance(data[key], dict):
+                data[key] = json.dumps(data[key])
+                data[key] = pymysql.escape_string(data[key])
+            values_str.append(data[key])
+
+        key_str = key_str.rstrip(',')  # 去掉字符串右侧的'，'
+        values_str = tuple(values_str)
+        print(key_str)
+        print('values_str的值是：',values_str)
+
+        sql1 = "insert into {0} ({1}) values {2}".format(tablename, key_str, values_str)
+        print('sql1的值是：', sql1)
+        self.cur.execute(sql1)
+        self.conn.commit()       # 提交到数据库
 
     def delete(self):
         '''
@@ -111,38 +148,40 @@ class mysql_db():
         '''
         pass
 
-    def test(self,data):
-        key_str = ''
-        values_str = ''
-        for key in data:
-            key_str += key + ","
-            if data[key] == None:
-                data[key] = 'null'              # 数据库中防止同时存入空字符串和null，此处做处理
-            values_str += str(data[key]) + ","
-
-        key_str = key_str.rstrip(',')  # 去掉字符串右侧的'，'
-        values_str = values_str.rstrip(',')  # 去掉字符串右侧的'，'
-        print('键：',key_str)
-        print('值：',values_str)
 
 
 if __name__ == '__main__':
-    '''
-    db = mysql_db()
-    results,index = db.select('mn_system_interface_to_developer')
-    r = db.access_result(results, index)
-    print(r)
-    db.close()
-    '''
-    data = { 'reason': 'null', 'result': 'success', 'return_value': None,
-            'interface_name': '搜索接口', 'login_result': 'success', 'abnormal': None,
-            'request_time': '2018-01-02 17:25:36'}
+
+    data = {'return_value': {'mobileBindStatus': True, 'result': True, 'errorMsg': 'success', 'errorCode': 0},
+            'interface_name': '登录接口', 'login_result': 'success', 'reason': None, 'result': 'success',
+            'abnormal': None, 'request_time': '2018-01-05 11:45:12'}
+
     db = mysql_db()
     # results,index = db.select('mn_system_interfacelist')
     # print(db.access_result(results, index))
-    db.insert('mn_system_interfacelist', data)
-
     # db.test(data)
+    # db.insert('mn_system_interfacelist', data)
+    db.insert_new('mn_system_interfacelist', data)
     db.close()
+
+    '''
+    d = {'mobileBindStatus': True, 'result': True, 'errorMsg': 'success', 'errorCode': 0}
+    d_j  = json.dumps(d)
+
+    print(pymysql.escape_string(d_j))
+    print(type(pymysql.escape_string(d_j)))
+    data = {'id': 6, 'return_value': d_j}
+    db = mysql_db()
+    sql = "insert into test2 (id, return_value) values ('5', '{}')".format(pymysql.escape_string(d_j))
+
+    print(sql)
+    db.cur.execute(sql)
+    db.conn.commit()
+    db.close()
+    '''
+
+
+
+
 
 

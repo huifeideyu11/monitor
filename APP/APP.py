@@ -161,6 +161,7 @@ for i in range(1,2):
         print(r_login.json())
         r_login_j = r_login.json()     # 当返回的json格式不规范时，此处有可能出现json解析报错
 
+
         #if r_login_j['errorCode'] == 0 and r_login_j['errorMsg'] == '成功':
         if r_login_j['errorCode'] == 0 and r_login_j['errorMsg'] == '成功':
             print('登录成功')
@@ -170,10 +171,10 @@ for i in range(1,2):
 
             data = {'login_result':'success', 'result':'success',
                     'abnormal':None, 'interface_name': '登录接口','reason': None,
-                    'request_time':time_f, 'return_value': r_login.text}
+                    'request_time':time_f, 'return_value': r_login.json()}
 
-
-            monitor.interfaceRequestResult(data)
+            print('data的值：',data)
+            monitor.interfaceRequestResult(data)                      # 将接口调用详情插入数据库
 
 
         else:
