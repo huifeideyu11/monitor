@@ -75,43 +75,6 @@ class mysql_db():
         '''
         pass
 
-    def insert(self, tablename, data):
-        '''
-
-        :param tablename: 表名
-        :param data: 字典类型，键值分别由字段名和数据组成
-        :return: 无
-        '''
-        key_str = ''
-        values_str = ''
-        for key in data:
-            key_str += key + ","
-            if data[key] == None:
-                data[key] = 'null'  # 数据库中防止同时存入空字符串和null，此处做处理
-
-            if isinstance(data[key], dict):
-                data[key] = json.dumps(data[key])
-                # data[key] = pymysql.escape_string(data[key])              # 对json中数据进行字符串转义
-
-            if isinstance(data[key], str):
-                values_str += data[key] + ","
-            else:
-                values_str += str(data[key]) + ","
-
-        key_str = key_str.rstrip(',')  # 去掉字符串右侧的'，'
-        values_str = values_str.rstrip(',')  # 去掉字符串右侧的'，'
-        print('未转换成元组前values_str值：', values_str)
-        values_str = tuple(values_str.split(','))     # 转换成元组
-        print('未转换成元组后values_str值：', values_str)
-
-        print(key_str)
-        print('values_str的值是：',values_str)
-
-        sql1 = "insert into {0} ({1}) values {2}".format(tablename, key_str, values_str)
-        print('sql1的值是：', sql1)
-        self.cur.execute(sql1)
-        self.conn.commit()       # 提交到数据库
-
     def insert_new(self, tablename, data):
         '''
 
@@ -127,17 +90,18 @@ class mysql_db():
             if data[key] == None:
                 data[key] = 'null'  # 数据库中防止同时存入空字符串和null，此处做处理
             if isinstance(data[key], dict):
-                data[key] = json.dumps(data[key])
+                data[key] = json.dumps(data[key], ensure_ascii=False)    # 将pyton格式数据转换成json格式数据，ensure_ascii=False参数表示允许acsii之外的字符显示
                 data[key] = pymysql.escape_string(data[key])
+                data[key] = data[key].replace('\\', '')     # 将转义字符去掉
+                # print('转以后数据：', data[key])
             values_str.append(data[key])
+
 
         key_str = key_str.rstrip(',')  # 去掉字符串右侧的'，'
         values_str = tuple(values_str)
-        print(key_str)
-        print('values_str的值是：',values_str)
-
+        print(values_str)
         sql1 = "insert into {0} ({1}) values {2}".format(tablename, key_str, values_str)
-        print('sql1的值是：', sql1)
+        # print('sql1的值是：', sql1)
         self.cur.execute(sql1)
         self.conn.commit()       # 提交到数据库
 
@@ -152,9 +116,9 @@ class mysql_db():
 
 if __name__ == '__main__':
 
-    data = {'return_value': {'mobileBindStatus': True, 'result': True, 'errorMsg': 'success', 'errorCode': 0},
+    data = {'return_value': {'mobileBindStatus': True, 'result': True, 'errorMsg': '成功', 'errorCode': 0},
             'interface_name': '登录接口', 'login_result': 'success', 'reason': None, 'result': 'success',
-            'abnormal': None, 'request_time': '2018-01-05 11:45:12'}
+            'abnormal': None, 'request_time': '2018-01-08 11:37:12'}
 
     db = mysql_db()
     # results,index = db.select('mn_system_interfacelist')

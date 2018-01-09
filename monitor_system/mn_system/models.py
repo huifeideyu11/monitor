@@ -27,7 +27,7 @@ class interfacelist(models.Model):
     request_time = models.DateTimeField(auto_now=True)  # 若登录失败，接口调用时间为调登录接口失败的时间
     result = models.CharField(max_length=100, blank=True, null=True)  # 接口调用结果（值只有：success和fail）
     reason = models.CharField(max_length=200, blank=True, null=True)  # 原因分为：接口调用异常和接口返回值错误
-    return_value = models.CharField(max_length=200, blank=True, null=True)  # 接口返回值错误时，接口的返回值
+    return_value = models.CharField(max_length=1000, blank=True, null=True)  # 接口返回值错误时，接口的返回值
     abnormal = models.TextField(blank=True, null=True)  # 接口访问异常时，异常信息
 
     def __str__(self):

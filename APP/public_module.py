@@ -113,7 +113,7 @@ class monitor():
         :return:
         '''
         db = mysql_db()                # 连接数据库
-        db.insert(tablename=tablename, data=data)    # 将接口调用的数据插入到数据库中
+        db.insert_new(tablename=tablename, data=data)    # 将接口调用的数据插入到数据库中
         db.close()               # 关闭数据库连接
 
 
